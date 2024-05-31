@@ -106,8 +106,8 @@ def insert_into_postgresql(data):
 
 if __name__ == "__main__":
     # Especifica las rutas de los archivos CSV y JSON
-    csv_file_path = 'C:\Users\Juli-Edd\Documents\challenge\Aplicacion_datos\flask\src\data\info.csv'
-    json_file_path = 'C:\Users\Juli-Edd\Documents\challenge\Aplicacion_datos\flask\src\data\datos.json'
+    csv_file_path = read_csv_file('C:\\Users\\Juli-Edd\\Documents\\challenge\\Aplicacion_datos\\flask\\src\\data\\info.csv')
+    json_file_path = read_json_file('C:\\Users\\Juli-Edd\\Documents\\challenge\\Aplicacion_datos\\flask\\src\\data\\datos.json')
 
     # Lee los datos del archivo CSV y JSON
     csv_data = read_csv_file(csv_file_path)
