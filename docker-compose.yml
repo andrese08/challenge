@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  server1:
+    build: ./Aplicacion_correo
+    ports:
+      - "5000:8000"
+    networks:
+      - my_bridge_network
+
+  server2_app_data:
+    build: ./Aplicacion_datos
+    ports:
+      - "2000:8000"
+    networks:
+      - my_bridge_network
+
+  server2_app:
+    build: ./Aplicacion_datos
+    ports:
+      - "4000:8001"
+    networks:
+      - my_bridge_network
+
+  server3:
+    build: ./Base_de_datos
+    ports:
+      - "5454:5432"
+    networks:
+      - my_bridge_network
+
+networks:
+  my_bridge_network:
+    driver: bridge

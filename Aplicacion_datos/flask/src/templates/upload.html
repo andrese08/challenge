@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Archivo CSV</title>
+    <style>
+      /* Estilos CSS para el contenedor del cuadro */
+      
+      .contenedor {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr); /* Cuatro columnas */
+          grid-template-rows: repeat(2, 1fr); /* Dos filas */
+          width: 800px; /* Ancho total del contenedor */
+          margin: 20px auto; /* Centrar el contenedor */
+      }
+      
+      /* Estilos CSS para las celdas del cuadro */
+      .cuadro {
+          background-color: rgb(246, 246, 246);
+          border: 2px solid rgb(12, 12, 12);
+          border-radius: 1px;
+          text-align: center;
+      }
+  </style>
+</head>
+<body>
+    <h1>Subir Archivo CSV</h1>
+    <!-- Contenedor del cuadro con cuatro columnas y dos filas -->
+    <div style="display: flex; justify-content: center;"> 
+    <h2>Datos a ingresar en el archivo CSV</h2>
+    </div>
+    <div class="contenedor">
+            <!-- Cuadro HTML utilizando la etiqueta <div> -->
+      <div class="cuadro">row_id</div>
+      <div class="cuadro">user_id</div>
+      <div class="cuadro">user_state</div>
+      <div class="cuadro">user_manager</div>
+      <div class="cuadro">Número descendente</div>
+      <div class="cuadro">Usuario de RED</div>
+      <div class="cuadro">E-mail usuario</div>
+      <div class="cuadro">E-mail manager</div>
+    </div>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required><br><br>
+        <input type="submit" value="Subir">
+    </form>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+</body>
+</html>

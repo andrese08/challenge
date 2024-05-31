@@ -1,0 +1,23 @@
+# Usar una imagen base de Python 3.8 en Alpine
+FROM python:3.8-alpine
+
+# Instalar dependencias necesarias
+RUN apk add --no-cache gcc musl-dev libffi-dev
+
+# Actualizar pip
+RUN pip install --upgrade pip
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar los archivos de la aplicación al contenedor
+COPY . /app
+
+# Instalar las dependencias especificadas en requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el archivo de configuración de datos
+COPY data.py /app/data.py
+
+# Comando para ejecutar ambas aplicaciones
+CMD ["sh", "-c", "python ui_app.py & python api_app.py"]

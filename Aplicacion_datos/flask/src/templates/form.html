@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Dinámico</title>
+</head>
+<body>
+    <h1>Formulario</h1>
+    <form action="" method="post">
+        {% for i in range(cantidad) %}
+        <h3>Datos {{ i+1 }}</h3>
+        <label for="db_name_{{ i }}">Base de datos:</label><br>
+        <input type="text" id="db_name_{{ i }}" name="db_name_{{ i }}" required><br><br>
+        <label for="user_id_{{ i }}">Usuario:</label><br>
+        <input type="text" id="user_id_{{ i }}" name="user_id_{{ i }}" required><br><br>
+        <label for="db_class_{{ i }}">Clasificación:</label><br>
+        <select id="db_class_{{ i }}" name="db_class_{{ i }}" required>
+          <option value="">Selecciona un valor</option>
+          <option value="High">High</option>
+          <option value="Low">Low</option>
+        </select><br><br>
+        {% endfor %}
+        <input type="submit" value="Enviar">
+    </form>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>
