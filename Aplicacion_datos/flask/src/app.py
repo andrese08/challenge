@@ -11,6 +11,16 @@ DATA_FOLDER = 'data'
 if not os.path.exists(DATA_FOLDER):
     os.makedirs(DATA_FOLDER)
 
+def ejecutar_script_batch():
+    try:
+        # Ejecutar el script batch
+        subprocess.run(["ejecutar_script.bat"], shell=True)
+        print("El script batch se ha ejecutado correctamente.")
+        flash('El script batch se ha ejecutado correctamente.')
+    except Exception as e:
+        print(f"Error al ejecutar el script batch: {e}")
+        flash('Error al ejecutar el script batch.')
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -90,26 +100,16 @@ def execute_import():
     if request.method == 'POST':
         try:
             # Ejecutar el script import_data.py
-            script_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/codigo/import_data.py'
+            script_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/codigo/import_data.py'
             print(f"Ejecutando el script: {script_path}")
-            result = subprocess.run(['python', script_path], capture_output=True, text=True)
-            print("Salida estándar del proceso:")
-            print(result.stdout)
-            print("Salida de error del proceso:")
-            print(result.stderr)
-            if result.returncode == 0:
-                # Si la ejecución es exitosa, procesa los datos y devuelve a la plantilla
-                data = json.loads(result.stdout)
-                print("salida")
-                return render_template('validate.html', table_data=data)
-            else:
-                # Si hay un error, muestra un mensaje flash
-                flash('Error al ejecutar el proceso de carga: ' + result.stderr)
+            subprocess.run(['python', script_path])
+            flash('El proceso de carga se ha ejecutado exitosamente.')
+                        
+            return redirect(url_for('validate'))
         except Exception as e:
             flash('Error al ejecutar el proceso de carga: ' + str(e))
-
-    # Renderiza la plantilla 'validate.html'
-    return render_template('validate.html')
+            return redirect(url_for('validate'))
+    
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=4000, debug=True)
+    app.run(debug=True)

@@ -7,7 +7,16 @@
 </head>
 <body>
     <h1>Ejecutar proceso de carga</h1>
-    <!-- Flash messages code here -->
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
     <form action="{{ url_for('execute_import') }}" method="post">
         <button type="submit">Ejecutar carga</button>
@@ -19,18 +28,26 @@
         <thead>
             <tr>
                 <th>Base de datos</th>
-                <th>Prioridad</th>
+                <th>User ID</th>
+                <th>Clase de DB</th>
+                <th>Estado del Usuario</th>
+                <th>Manager del Usuario</th>
             </tr>
         </thead>
         <tbody>
-            {% for key, value in table_data.items() %}
+            {% for entry in table_data %}
             <tr>
-                <td>{{ key }}</td>
-                <td>{{ value }}</td>
+                <td>{{ entry['db_name'] }}</td>
+                <td>{{ entry['user_id'] }}</td>
+                <td>{{ entry['db_class'] }}</td>
+                <td>{{ entry['user_state'] }}</td>
+                <td>{{ entry['user_manager'] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p></p>
     {% endif %}
 </body>
 </html>
