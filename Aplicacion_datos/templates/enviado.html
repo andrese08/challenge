@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validar Datos</title>
+    <title>Información Procesada</title>
 </head>
 <body>
-    <h1>Datos Validados</h1>
+    <h1>Resultado del proceso</h1>
+    <h2> El proceso de carga se ha ejecutado de manera exitosa.</h2>
     <!-- Flash messages -->
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -19,7 +20,7 @@
     {% endwith %}
     
     
-    <h2>Tabla de Datos</h2>
+    <h2>Bases de datos procesadas</h2>
     <table border="1">
         <thead>
             <tr>
@@ -34,6 +35,26 @@
                 <td>{{ entry.db_name }}</td>
                 <td>{{ entry.db_class }}</td>
                 <td>{{ entry.user_manager }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>No se enviaron los correos para las bases de datos relacionadas en la siguiente tabla, el usuario no existe en el archivo CSV</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Base de Datos</th>
+                <th>Clasificación</th>
+                <th>Correo Enviado a</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in validate_data_sent %}
+            <tr>
+                <td>{{ entry.db_name }}</td>
+                <td>{{ entry.db_class }}</td>
+                <td>{{ entry.user_id }}</td>
             </tr>
             {% endfor %}
         </tbody>

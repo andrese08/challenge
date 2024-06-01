@@ -100,23 +100,33 @@ def execute_import():
     if request.method == 'POST':
         try:
             # Ejecutar el script import_data.py
-            script_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/codigo/import_data.py'
+            script_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/codigo/import_data.py'
             print(f"Ejecutando el script: {script_path}")
             subprocess.run(['python', script_path])
-            flash('El proceso de carga se ha ejecutado exitosamente.')
                         
             return redirect(url_for('enviado'))
         except Exception as e:
             flash('Error al ejecutar el proceso de carga: ' + str(e))
             return redirect(url_for('validate'))
-@app.route('/enviado')
-def enviado():
-    # Cargar datos desde validate_data.json
-    validate_data_path = 'templates/validate_data.json'
-    with open(validate_data_path, 'r') as file:
-        validate_data = json.load(file)
 
-    return render_template('enviado.html', validate_data=validate_data)
+@app.route('/enviado', methods=['GET'])
+def enviado():
+    try:
+        # Cargar datos desde validate_data.json
+        validate_data_path = 'templates/validate_data.json'
+        with open(validate_data_path, 'r') as file:
+            validate_data = json.load(file)
+        
+        # Cargar datos desde no_sent_data.json
+        validate_data_path_sent = 'templates/no_sent_data.json'
+        with open(validate_data_path_sent, 'r') as file:
+            validate_data_sent = json.load(file)
+        
+        return render_template('enviado.html', validate_data=validate_data, validate_data_sent=validate_data_sent)
+    
+    except Exception as e:
+        # Manejo de errores (puedes personalizar este mensaje o redirigir a una página de error)
+        return f"Error al cargar los datos: {e}"
    
 
 if __name__ == '__main__':

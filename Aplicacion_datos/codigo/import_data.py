@@ -5,7 +5,6 @@ from config import config
 from correo import enviar_correo
 
 def read_csv_file(file_path):
-    """Lee un archivo CSV y devuelve los datos como un diccionario."""
     try:
         with open(file_path, 'r') as file:
             reader = csv.DictReader(file, delimiter=';')
@@ -35,63 +34,94 @@ def read_json_file(file_path):
         print(f"Error al abrir el archivo JSON: {e}")
         return []
 
-
-
 def combine_data(csv_data, json_data):
-    """Combina datos del archivo CSV y JSON."""
-    data_to_update = []  # Lista para almacenar los datos combinados
+    data_to_update = []  
     for json_entry in json_data:
         db_name = json_entry['db_name']
-        user_id = json_entry['user_id']  # Mantener user_id como cadena
+        user_id = json_entry['user_id']  
         db_class = json_entry['db_class']
         
-        # Verificar si el user_id está en el CSV
+        
+        if user_id in csv_data:
+            csv_entry = csv_data[user_id]
+            user_state = csv_entry['user_state']
+            user_manager = csv_entry['user_manager']
+        
+            combined_entry = {
+                'db_name': db_name,
+                'user_id': user_id,  
+                'db_class': db_class,
+                'user_state': user_state,
+                'user_manager': user_manager
+            }
+            data_to_update.append(combined_entry)
+           
+    return data_to_update
+
+
+def data_check(csv_data, json_data):
+    data_check_result = []
+    data_found_db =[]
+
+  
+    def buscar_en_db(user_id):
+        try:
+            db_config = config(filename='data.ini', section='postgresql')
+            connection = psycopg2.connect(**db_config)
+            cursor = connection.cursor()
+            
+            cursor.execute("SELECT user_manager FROM db_info WHERE user_id=%s", (user_id,))
+            resultado = cursor.fetchone()
+            
+        
+            cursor.close()
+            connection.close()
+            
+            return resultado
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            return None
+
+  
+    for json_entry in json_data:
+        db_name = json_entry['db_name']
+        user_id = json_entry['user_id']  
+        db_class = json_entry['db_class']
+  
         if user_id in csv_data:
             csv_entry = csv_data[user_id]
             user_state = csv_entry['user_state']
             user_manager = csv_entry['user_manager']
             
-            # Crear entrada combinada
-            combined_entry = {
+            combined = {
                 'db_name': db_name,
-                'user_id': user_id,  # user_id como cadena
+                'user_id': user_id,
                 'db_class': db_class,
                 'user_state': user_state,
                 'user_manager': user_manager
             }
-            # Agregar entrada combinada a la lista de datos para actualizar
-            data_to_update.append(combined_entry)
-            print("Entrada combinada:", combined_entry)  # Verificar la entrada combinada
-            
-    return data_to_update
-
-
+                   
+    else:
+        data_to_check = {
+            "db_name": db_name,
+            "user_id": user_id,
+            "db_class": db_class
+        }
+        data_check_result.append(data_to_check)
+        print("Paso 3", data_to_check)
+    return data_check_result
 
 def insert_into_postgresql(data):
-    """Inserta o actualiza los datos en una base de datos PostgreSQL."""
-    connection = None  # Definir la variable connection
+    connection = None  
     try:
-        # Obtener la configuración de la base de datos desde data.ini
-        db_config = config(filename='data.ini', section='postgresql')
-
-        # Establecer la conexión a la base de datos
-        connection = psycopg2.connect(**db_config)
-
-        """db_config = {
-            'host': 'localhost',
-            'database': 'melidb',
-            'user': 'meli',
-            'password': 'p4ssw0rd',
-            'port': '5454'
     
-        }"""
+        db_config = config(filename='data.ini', section='postgresql')
+        connection = psycopg2.connect(**db_config)
         cursor = connection.cursor()
 
-        # Verificar si la tabla existe
         cursor.execute("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'db_info')")
         table_exists = cursor.fetchone()[0]
 
-        # Crear la tabla si no existe
         if not table_exists:
             cursor.execute("""
                 CREATE TABLE db_info (
@@ -105,7 +135,7 @@ def insert_into_postgresql(data):
             connection.commit()
             print("Tabla creada exitosamente.")
 
-        # Insertar o actualizar datos en la tabla
+  
         for entry in data:
             cursor.execute("""
                 INSERT INTO db_info (db_name, user_id, db_class, user_state, user_manager)
@@ -124,7 +154,7 @@ def insert_into_postgresql(data):
                 entry['user_manager']
             ))
 
-        # Confirmar los cambios
+  
         connection.commit()
 
     except Exception as e:
@@ -138,29 +168,28 @@ def insert_into_postgresql(data):
     
 
 if __name__ == "__main__":
-       # Ruta del archivo JSON a actualizar
-    json_validate_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/templates/validate_data.json'
+     
+    json_validate_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/validate_data.json'
+    json_no_sent_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/no_sent_data.json'
+    csv_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/data/info.csv'
+    json_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/data/datos.json'
+    json_file_path_validate = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/validate_data.json'
 
-    # Borrar los valores almacenados en el archivo JSON
+
     with open(json_validate_path, 'w') as file:
         json.dump([], file)
+    with open(json_no_sent_path, 'w') as file:
+        json.dump([], file)
 
-    print("Valores del archivo JSON borrados correctamente.")
-
-    # Especifica las rutas de los archivos CSV y JSON
-    csv_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/data/info.csv'
-    json_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/data/datos.json'
-
-    # Lee los datos del archivo CSV y JSON
     csv_data = read_csv_file(csv_file_path)
     json_data = read_json_file(json_file_path)
 
-    # Combinar los datos
+  
     combined_data = combine_data(csv_data, json_data)
-    print("Datos combinados:", combined_data)  # Imprimir el diccionario de datos combinados para verificar
-
-    # test del filtro
-    # Extraer los campos deseados y crear el nuevo diccionario data_to_send solo si db_class es 'High'
+    print("Datos combinados:", combined_data) 
+   
+    insert_into_postgresql(combined_data)  
+        
     data_to_send = [
         {
             'db_name': item['db_name'],
@@ -170,27 +199,27 @@ if __name__ == "__main__":
         for item in combined_data if item['db_class'] == 'High'
     ]
     print("ESTA ES LA VERDADERA DATA PARA ENVIAR", data_to_send)
+    
+    data_check_result = data_check(csv_data, json_data)
+    print ("ACAAAAAAAAAAAAAAAAAAAAAAAAAAA", data_check_result)
+    data_check_result_sent = [
+        {
+            'db_name': item_sent['db_name'],
+            'db_class': item_sent['db_class'],
+            'user_id': item_sent['user_id']
+        }
+        for item_sent in data_check_result if item_sent['db_class'] == 'High'
+    ]
 
-    # Insertar los datos combinados en PostgreSQL
-    insert_into_postgresql(combined_data)
-
-    # Ruta del archivo JSON donde se guardarán los datos
-    json_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/templates/validate_data.json'
-
-    # Crear una lista de diccionarios con los campos específicos
-    data_to_save = [{'db_name': entry['db_name'], 'db_class': entry['db_class'], 'user_manager': entry['user_manager']} for entry in combined_data]
-
-    # Guardar los datos en el archivo JSON
-    with open(json_file_path, 'w') as file:
+     
+    with open(json_file_path_validate, 'w') as file:
         json.dump(data_to_send, file)
-
+    with open(json_no_sent_path, 'w') as file:
+        json.dump(data_check_result_sent, file)
     print("Datos guardados correctamente en el archivo JSON.")
 
-    # Imprimir datos combinados en formato JSON para ser capturados por Flask
-    print(json.dumps(combined_data), "salida JSON")
-
-
-    # Validación de db_class y envío de correo electrónico
+  
+# ENVIO CORREO
     """for dato in combined_data:
         if dato['db_class'] == 'High':
             mensaje_correo = f"De acuerdo a la información suministrada, la clasificación para la tabla {dato['db_name']} es crítica, por esta razón es necesario que envíe la respuesta con el OK de aprobación al E-mail: xxxx@meli.com"
