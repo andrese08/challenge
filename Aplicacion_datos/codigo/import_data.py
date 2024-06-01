@@ -18,7 +18,6 @@ def read_csv_file(file_path):
 import json
 
 def read_json_file(file_path):
-    """Lee un archivo JSON y devuelve los datos como una lista de diccionarios."""
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             json_data = json.load(file)
@@ -61,9 +60,7 @@ def combine_data(csv_data, json_data):
 
 def data_check(csv_data, json_data):
     data_check_result = []
-    data_found_db =[]
-
-  
+     
     def buscar_en_db(user_id):
         try:
             db_config = config(filename='data.ini', section='postgresql')
@@ -82,12 +79,12 @@ def data_check(csv_data, json_data):
             print(error)
             return None
 
-  
+        
     for json_entry in json_data:
         db_name = json_entry['db_name']
         user_id = json_entry['user_id']  
         db_class = json_entry['db_class']
-  
+    
         if user_id in csv_data:
             csv_entry = csv_data[user_id]
             user_state = csv_entry['user_state']
@@ -100,15 +97,17 @@ def data_check(csv_data, json_data):
                 'user_state': user_state,
                 'user_manager': user_manager
             }
-                   
-    else:
-        data_to_check = {
-            "db_name": db_name,
-            "user_id": user_id,
-            "db_class": db_class
-        }
-        data_check_result.append(data_to_check)
-        print("Paso 3", data_to_check)
+            
+            #data_check_result.append(data_check_result)  # Añade el diccionario combinado a data_check_result
+        else:
+            no_combined = {
+                'db_name': db_name,
+                'user_id': user_id,
+                'db_class': db_class,  
+            }
+            
+            data_check_result.append(no_combined) 
+            
     return data_check_result
 
 def insert_into_postgresql(data):
@@ -169,13 +168,11 @@ def insert_into_postgresql(data):
 
 if __name__ == "__main__":
      
-    json_validate_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/validate_data.json'
-    json_no_sent_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/no_sent_data.json'
+    json_validate_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/json/validate_data.json'
+    json_no_sent_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/json/no_sent_data.json'
     csv_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/data/info.csv'
     json_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/data/datos.json'
-    json_file_path_validate = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/validate_data.json'
-
-
+    
     with open(json_validate_path, 'w') as file:
         json.dump([], file)
     with open(json_no_sent_path, 'w') as file:
@@ -186,7 +183,6 @@ if __name__ == "__main__":
 
   
     combined_data = combine_data(csv_data, json_data)
-    print("Datos combinados:", combined_data) 
    
     insert_into_postgresql(combined_data)  
         
@@ -198,10 +194,9 @@ if __name__ == "__main__":
         }
         for item in combined_data if item['db_class'] == 'High'
     ]
-    print("ESTA ES LA VERDADERA DATA PARA ENVIAR", data_to_send)
-    
+        
     data_check_result = data_check(csv_data, json_data)
-    print ("ACAAAAAAAAAAAAAAAAAAAAAAAAAAA", data_check_result)
+
     data_check_result_sent = [
         {
             'db_name': item_sent['db_name'],
@@ -212,15 +207,15 @@ if __name__ == "__main__":
     ]
 
      
-    with open(json_file_path_validate, 'w') as file:
+    with open(json_validate_path, 'w') as file:
         json.dump(data_to_send, file)
     with open(json_no_sent_path, 'w') as file:
         json.dump(data_check_result_sent, file)
-    print("Datos guardados correctamente en el archivo JSON.")
+    
 
   
 # ENVIO CORREO
-    """for dato in combined_data:
+    for dato in combined_data:
         if dato['db_class'] == 'High':
             mensaje_correo = f"De acuerdo a la información suministrada, la clasificación para la tabla {dato['db_name']} es crítica, por esta razón es necesario que envíe la respuesta con el OK de aprobación al E-mail: xxxx@meli.com"
-            enviar_correo(dato['user_manager'], mensaje_correo)"""
+            enviar_correo(dato['user_manager'], mensaje_correo)

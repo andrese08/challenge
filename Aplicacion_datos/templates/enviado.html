@@ -5,8 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Información Procesada</title>
 </head>
+<style>
+    /* Estilos CSS para el contenedor del cuadro */
+    
+    .contenedor {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Cuatro columnas */
+        grid-template-rows: repeat(2, 1fr); /* Dos filas */
+        width: 800px; /* Ancho total del contenedor */
+        margin: 20px auto; /* Centrar el contenedor */
+    }
+    
+    /* Estilos CSS para las celdas del cuadro */
+    .cuadro {
+        background-color: rgb(246, 246, 246);
+        border: 2px solid rgb(12, 12, 12);
+        border-radius: 1px;
+        text-align: center;
+    }
+</style>
 <body>
     <h1>Resultado del proceso</h1>
+    <div style="display: flex; justify-content: center;"></div>
     <h2> El proceso de carga se ha ejecutado de manera exitosa.</h2>
     <!-- Flash messages -->
     {% with messages = get_flashed_messages() %}
@@ -39,7 +59,7 @@
             {% endfor %}
         </tbody>
     </table>
-
+    <div style="display: flex; justify-content: center;"></div>
     <h2>No se enviaron los correos para las bases de datos relacionadas en la siguiente tabla, el usuario no existe en el archivo CSV</h2>
     <table border="1">
         <thead>

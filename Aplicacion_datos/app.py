@@ -83,7 +83,6 @@ def upload():
         if file and file.filename.endswith('.csv'):
             file_path = os.path.join(DATA_FOLDER, file.filename)
             file.save(file_path)
-            flash('Archivo CSV cargado de manera correcta, si desea ejecutar el proceso de carga utiliza el boton.')
             return redirect(url_for('validate'))  # Redirigir a la página 'validate.html'
         else:
             flash('El archivo debe ser un CSV.')
@@ -113,12 +112,12 @@ def execute_import():
 def enviado():
     try:
         # Cargar datos desde validate_data.json
-        validate_data_path = 'templates/validate_data.json'
+        validate_data_path = 'templates/json/validate_data.json'
         with open(validate_data_path, 'r') as file:
             validate_data = json.load(file)
         
         # Cargar datos desde no_sent_data.json
-        validate_data_path_sent = 'templates/no_sent_data.json'
+        validate_data_path_sent = 'templates//json/no_sent_data.json'
         with open(validate_data_path_sent, 'r') as file:
             validate_data_sent = json.load(file)
         

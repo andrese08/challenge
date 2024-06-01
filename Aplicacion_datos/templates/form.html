@@ -9,10 +9,10 @@
     <h1>Formulario</h1>
     <form action="" method="post">
         {% for i in range(cantidad) %}
-        <h3>Datos {{ i+1 }}</h3>
-        <label for="db_name_{{ i }}">Base de datos:</label><br>
+        <h3>Dato {{ i+1 }}</h3>
+        <label for="db_name_{{ i }}">Nombre de la base de datos:</label><br>
         <input type="text" id="db_name_{{ i }}" name="db_name_{{ i }}" required><br><br>
-        <label for="user_id_{{ i }}">Usuario:</label><br>
+        <label for="user_id_{{ i }}">Usuario responsable:</label><br>
         <input type="text" id="user_id_{{ i }}" name="user_id_{{ i }}" required><br><br>
         <label for="db_class_{{ i }}">Clasificación:</label><br>
         <select id="db_class_{{ i }}" name="db_class_{{ i }}" required>
