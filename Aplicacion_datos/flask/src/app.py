@@ -105,11 +105,19 @@ def execute_import():
             subprocess.run(['python', script_path])
             flash('El proceso de carga se ha ejecutado exitosamente.')
                         
-            return redirect(url_for('validate'))
+            return redirect(url_for('enviado'))
         except Exception as e:
             flash('Error al ejecutar el proceso de carga: ' + str(e))
             return redirect(url_for('validate'))
-    
+@app.route('/enviado')
+def enviado():
+    # Cargar datos desde validate_data.json
+    validate_data_path = 'templates/validate_data.json'
+    with open(validate_data_path, 'r') as file:
+        validate_data = json.load(file)
+
+    return render_template('enviado.html', validate_data=validate_data)
+   
 
 if __name__ == '__main__':
     app.run(debug=True)

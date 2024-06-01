@@ -65,6 +65,8 @@ def combine_data(csv_data, json_data):
             
     return data_to_update
 
+
+
 def insert_into_postgresql(data):
     """Inserta o actualiza los datos en una base de datos PostgreSQL."""
     connection = None  # Definir la variable connection
@@ -136,6 +138,15 @@ def insert_into_postgresql(data):
     
 
 if __name__ == "__main__":
+       # Ruta del archivo JSON a actualizar
+    json_validate_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/templates/validate_data.json'
+
+    # Borrar los valores almacenados en el archivo JSON
+    with open(json_validate_path, 'w') as file:
+        json.dump([], file)
+
+    print("Valores del archivo JSON borrados correctamente.")
+
     # Especifica las rutas de los archivos CSV y JSON
     csv_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/data/info.csv'
     json_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/data/datos.json'
@@ -148,17 +159,39 @@ if __name__ == "__main__":
     combined_data = combine_data(csv_data, json_data)
     print("Datos combinados:", combined_data)  # Imprimir el diccionario de datos combinados para verificar
 
+    # test del filtro
+    # Extraer los campos deseados y crear el nuevo diccionario data_to_send solo si db_class es 'High'
+    data_to_send = [
+        {
+            'db_name': item['db_name'],
+            'db_class': item['db_class'],
+            'user_manager': item['user_manager']
+        }
+        for item in combined_data if item['db_class'] == 'High'
+    ]
+    print("ESTA ES LA VERDADERA DATA PARA ENVIAR", data_to_send)
+
     # Insertar los datos combinados en PostgreSQL
     insert_into_postgresql(combined_data)
+
+    # Ruta del archivo JSON donde se guardarán los datos
+    json_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/flask/src/templates/validate_data.json'
+
+    # Crear una lista de diccionarios con los campos específicos
+    data_to_save = [{'db_name': entry['db_name'], 'db_class': entry['db_class'], 'user_manager': entry['user_manager']} for entry in combined_data]
+
+    # Guardar los datos en el archivo JSON
+    with open(json_file_path, 'w') as file:
+        json.dump(data_to_send, file)
+
+    print("Datos guardados correctamente en el archivo JSON.")
 
     # Imprimir datos combinados en formato JSON para ser capturados por Flask
     print(json.dumps(combined_data), "salida JSON")
 
 
     # Validación de db_class y envío de correo electrónico
-    for dato in combined_data:
+    """for dato in combined_data:
         if dato['db_class'] == 'High':
             mensaje_correo = f"De acuerdo a la información suministrada, la clasificación para la tabla {dato['db_name']} es crítica, por esta razón es necesario que envíe la respuesta con el OK de aprobación al E-mail: xxxx@meli.com"
-            enviar_correo(dato['user_manager'], mensaje_correo)
-     
-    
+            enviar_correo(dato['user_manager'], mensaje_correo)"""
