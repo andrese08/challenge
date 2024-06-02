@@ -168,10 +168,10 @@ def insert_into_postgresql(data):
 
 if __name__ == "__main__":
      
-    json_validate_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/json/validate_data.json'
-    json_no_sent_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/templates/json/no_sent_data.json'
-    csv_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/data/info.csv'
-    json_file_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/data/datos.json'
+    json_validate_path = '/usr/src/app/templates/json/validate_data.json'
+    json_no_sent_path = '/usr/src/app/templates/json/no_sent_data.json'
+    csv_file_path = '/usr/src/app/data/info.csv'
+    json_file_path = '/usr/src/app/data/datos.json'
     
     with open(json_validate_path, 'w') as file:
         json.dump([], file)

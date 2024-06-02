@@ -1,34 +1,33 @@
-version: '3'
+version: '3.8'
 
 services:
-  server1:
-    build: ./Aplicacion_correo
-    ports:
-      - "5000:8000"
-    networks:
-      - my_bridge_network
-
-  server2_app_data:
-    build: ./Aplicacion_datos
-    ports:
-      - "2000:8000"
-    networks:
-      - my_bridge_network
-
-  server2_app:
-    build: ./Aplicacion_datos
-    ports:
-      - "4000:8001"
-    networks:
-      - my_bridge_network
-
-  server3:
-    build: ./Base_de_datos
+  db:
+    image: "postgres"
+    environment:
+      - POSTGRES_PASSWORD=p4ssw0rd
+    volumes:
+      - ./Base_de_datos/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5454:5432"
     networks:
-      - my_bridge_network
+      - app-tier
+    container_name: db
+    restart: always
+
+  webapp:
+    restart: always
+    build: ./Aplicacion_datos
+    volumes:
+      - ./Aplicacion_datos:/usr/src/app
+    ports:
+      - 4000:5000
+    networks:
+      - app-tier
+    container_name: webapp
 
 networks:
-  my_bridge_network:
+  app-tier:
     driver: bridge
+
+
+

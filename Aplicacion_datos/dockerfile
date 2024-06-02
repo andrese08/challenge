@@ -1,27 +1,30 @@
-# Usa una imagen base de Python
-FROM python:3.9
+FROM python:3
+COPY . /usr/src/app
+COPY requirements.txt /usr/src/app/requirements.txt
+WORKDIR /usr/src/app
+RUN pip install --no-cache-dir -r requirements.txt
+#RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
+#RUN apk add --no-cache python3-dev \
+ #   && pip3 install --upgrade pip
 
-# Establece el directorio de trabajo
-WORKDIR /app
+#COPY ./requirements.txt .
 
-# Copia el archivo requirements.txt al contenedor
-COPY requirements.txt requirements.txt
 
 # Instala las herramientas de compilación necesarias
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    gfortran \
-    libatlas-base-dev \
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y \
+ #   build-essential \
+  #  gfortran \
+   # libatlas-base-dev \
+    #&& rm -rf /var/lib/apt/lists/*
 
 # Instala las dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
+
 
 # Copia todo el contenido del directorio actual al contenedor
-COPY . .
+#COPY . .
 
 # Expone el puerto 5000 para la aplicación Flask
-EXPOSE 5000
+#EXPOSE 5000
 
 # Especifica el comando por defecto para ejecutar la aplicación
-CMD ["python", "app.py"]

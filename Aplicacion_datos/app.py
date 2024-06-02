@@ -4,7 +4,7 @@ import json
 import os
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Necesario para usar flash messages
+#app.secret_key = 'your_secret_key'  # Necesario para usar flash messages
 
 # Ruta de la carpeta específica para guardar archivos JSON y CSV
 DATA_FOLDER = 'data'
@@ -99,7 +99,7 @@ def execute_import():
     if request.method == 'POST':
         try:
             # Ejecutar el script import_data.py
-            script_path = 'C:/Users/Juli-Edd/Documents/challenge/Aplicacion_datos/codigo/import_data.py'
+            script_path = '/usr/src/app/codigo/import_data.py'
             print(f"Ejecutando el script: {script_path}")
             subprocess.run(['python', script_path])
                         
@@ -112,12 +112,12 @@ def execute_import():
 def enviado():
     try:
         # Cargar datos desde validate_data.json
-        validate_data_path = 'templates/json/validate_data.json'
+        validate_data_path = '/usr/src/app/templates/json/validate_data.json'
         with open(validate_data_path, 'r') as file:
             validate_data = json.load(file)
         
         # Cargar datos desde no_sent_data.json
-        validate_data_path_sent = 'templates//json/no_sent_data.json'
+        validate_data_path_sent = '/usr/src/app/templates//json/no_sent_data.json'
         with open(validate_data_path_sent, 'r') as file:
             validate_data_sent = json.load(file)
         
@@ -129,4 +129,4 @@ def enviado():
    
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
