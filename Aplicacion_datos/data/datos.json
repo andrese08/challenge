@@ -1,1 +1,0 @@
-[{"db_name": "clientes", "user_id": "juli", "db_class": "High"}, {"db_name": "proveedores", "user_id": "edd", "db_class": "High"}, {"db_name": "Mascotas", "user_id": "aleatorio", "db_class": "High"}, {"db_name": "vendedores", "user_id": "juli", "db_class": "Low"}, {"db_name": "sucursales", "user_id": "edd", "db_class": "Low"} ]
