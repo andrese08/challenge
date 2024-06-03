@@ -1,3 +1,7 @@
+
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import csv
 import json
 import psycopg2
@@ -60,26 +64,7 @@ def combine_data(csv_data, json_data):
 
 def data_check(csv_data, json_data):
     data_check_result = []
-     
-    def buscar_en_db(user_id):
-        try:
-            db_config = config(filename='data.ini', section='postgresql')
-            connection = psycopg2.connect(**db_config)
-            cursor = connection.cursor()
-            
-            cursor.execute("SELECT user_manager FROM db_info WHERE user_id=%s", (user_id,))
-            resultado = cursor.fetchone()
-            
-        
-            cursor.close()
-            connection.close()
-            
-            return resultado
-        except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
-            return None
-
-        
+             
     for json_entry in json_data:
         db_name = json_entry['db_name']
         user_id = json_entry['user_id']  
@@ -110,12 +95,26 @@ def data_check(csv_data, json_data):
             
     return data_check_result
 
+################################################################
+
+
+  
+
+
+#########################################################################
 def insert_into_postgresql(data):
     connection = None  
     try:
     
-        db_config = config(filename='data.ini', section='postgresql')
-        connection = psycopg2.connect(**db_config)
+        #db_config = config(filename='data.ini', section='postgresql')
+        #connection = psycopg2.connect(**db_config)
+        connection = psycopg2.connect(
+        dbname="postgres",
+        user="postgres",
+        password="password",
+        host="db",  # Nombre del servicio en docker-compose
+        port="5432"
+    )
         cursor = connection.cursor()
 
         cursor.execute("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'db_info')")

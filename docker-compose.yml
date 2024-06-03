@@ -4,30 +4,29 @@ services:
   db:
     image: "postgres"
     environment:
-      - POSTGRES_PASSWORD=p4ssw0rd
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - ./Base_de_datos/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5454:5432"
     networks:
       - app-tier
-    container_name: db
-    restart: always
+    container_name: database
 
   webapp:
-    restart: always
     build: ./Aplicacion_datos
     volumes:
       - ./Aplicacion_datos:/usr/src/app
     ports:
-      - 4000:5000
+      - "4000:5000"
     networks:
       - app-tier
+    depends_on:
+      - db
     container_name: webapp
+    restart: always
 
 networks:
   app-tier:
     driver: bridge
-
-
-
