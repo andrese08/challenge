@@ -36,7 +36,7 @@ def read_json_file(file_path):
     except Exception as e:
         print(f"Error al abrir el archivo JSON: {e}")
         return []
-
+    
 def combine_data(csv_data, json_data):
     data_to_update = []  
     for json_entry in json_data:
@@ -95,26 +95,12 @@ def data_check(csv_data, json_data):
             
     return data_check_result
 
-################################################################
-
-
-  
-
-
-#########################################################################
 def insert_into_postgresql(data):
     connection = None  
     try:
     
-        #db_config = config(filename='data.ini', section='postgresql')
-        #connection = psycopg2.connect(**db_config)
-        connection = psycopg2.connect(
-        dbname="postgres",
-        user="postgres",
-        password="password",
-        host="db",  # Nombre del servicio en docker-compose
-        port="5432"
-    )
+        db_config = config(filename='data.ini', section='postgresql')
+        connection = psycopg2.connect(**db_config)
         cursor = connection.cursor()
 
         cursor.execute("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'db_info')")
