@@ -11,7 +11,9 @@ from correo import enviar_correo
 def read_csv_file(file_path):
     try:
         with open(file_path, 'r') as file:
-            reader = csv.DictReader(file, delimiter=';')
+            lineas = file.readlines()           
+            cambio_lineas = [line.replace(',', ';') for line in lineas]
+            reader = csv.DictReader(cambio_lineas, delimiter=';')
             csv_data = {row['user_id']: row for row in reader}
             print("Datos del archivo CSV:", csv_data)
             return csv_data
@@ -83,7 +85,7 @@ def data_check(csv_data, json_data):
                 'user_manager': user_manager
             }
             
-            #data_check_result.append(data_check_result)  # Añade el diccionario combinado a data_check_result
+            
         else:
             no_combined = {
                 'db_name': db_name,
@@ -148,8 +150,7 @@ def insert_into_postgresql(data):
         if connection:
             cursor.close()
             connection.close()
-
-    
+  
 
 if __name__ == "__main__":
      
@@ -157,20 +158,26 @@ if __name__ == "__main__":
     json_no_sent_path = '/usr/src/app/templates/json/no_sent_data.json'
     csv_file_path = '/usr/src/app/data/info.csv'
     json_file_path = '/usr/src/app/data/datos.json'
-    
+
+
+#Borrar la informacion actual de los archivos
     with open(json_validate_path, 'w') as file:
         json.dump([], file)
     with open(json_no_sent_path, 'w') as file:
         json.dump([], file)
 
+
+#Leer los archivos 
     csv_data = read_csv_file(csv_file_path)
     json_data = read_json_file(json_file_path)
 
+#Combinar los datos
   
     combined_data = combine_data(csv_data, json_data)
-   
     insert_into_postgresql(combined_data)  
-        
+
+# Datos a enviar
+     
     data_to_send = [
         {
             'db_name': item['db_name'],
@@ -181,7 +188,6 @@ if __name__ == "__main__":
     ]
         
     data_check_result = data_check(csv_data, json_data)
-
     data_check_result_sent = [
         {
             'db_name': item_sent['db_name'],
@@ -191,6 +197,7 @@ if __name__ == "__main__":
         for item_sent in data_check_result if item_sent['db_class'] == 'High'
     ]
 
+ # Creacion de archivos JSON para publicar en la respuesta
      
     with open(json_validate_path, 'w') as file:
         json.dump(data_to_send, file)

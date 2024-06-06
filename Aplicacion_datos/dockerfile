@@ -17,5 +17,5 @@ COPY ./ /usr/src/app
 # Instala las dependencias de Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Comando para iniciar la aplicación (ajústalo según sea necesario)
+# Comando para iniciar la aplicación
 CMD ["python", "app.py"]

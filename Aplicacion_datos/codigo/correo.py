@@ -12,14 +12,13 @@ def enviar_correo(destinatario, mensaje):
     asunto = 'Reválidas anuales del proceso de clasificación de la información--MELI'
     
     mensaje = MIMEText(mensaje)
-    #mensaje['From'] = remitente
     mensaje['To'] = destinatario
     mensaje['Subject'] = asunto
 
     servidor_smtp = 'smtp.gmail.com'
     puerto_smtp = 587
-    usuario_smtp = 'challengemeliedison@gmail.com'  # Coloca tu dirección de correo aquí
-    password_smtp = 'gmphjebdlsnzyrst'  # Coloca tu contraseña aquí
+    usuario_smtp = 'challengemeliedison@gmail.com'  
+    password_smtp = 'gmphjebdlsnzyrst'  
     
 
     servidor = smtplib.SMTP(servidor_smtp, puerto_smtp)
